@@ -23,7 +23,7 @@ scene.add(ambientLight);
 
 // Adicionando uma luz direcional
 let directionalLight = new THREE.DirectionalLight(0xf5f5dc, 1);
-directionalLight.position.set(1, 1, 1);
+directionalLight.position.set(10, 100, 10);
 scene.add(directionalLight);
 
 var lightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
@@ -56,7 +56,7 @@ loader.load(
 const texture = new THREE.TextureLoader().load("./textures/eu.png");
 texture.colorSpace = THREE.SRGBColorSpace;
 
-const geometry = new THREE.SphereGeometry(10, 10, 10);
+const geometry = new THREE.SphereGeometry();
 const material = new THREE.MeshBasicMaterial({ map: texture });
 
 const cube = new THREE.Mesh(geometry, material);
@@ -94,6 +94,10 @@ adilson.position.y = 20;
 adilson.position.x = 10;
 
 let arrayPerson = [cube, billy, angelica, alex, adilson];
+arrayPerson.forEach((el) => {
+  el.scale.set(5, 5, 5);
+  el.position.x += 50;
+});
 
 const createCubeWithTexture = () => {
   for (let i = 0; i < 2000; i++) {
@@ -118,7 +122,7 @@ const createCubeWithTexture = () => {
     scene.add(object);
   }
 };
-// createCubeWithTexture();
+createCubeWithTexture();
 
 camera.position.z = 30;
 
