@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import WebGL from "three/addons/capabilities/WebGL.js";
+import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -29,17 +30,36 @@ scene.add(directionalLight);
 var lightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
 scene.add(lightHelper);
 
+function createPanelSkull() {
+
+  const gui = new GUI( { width: 310 } );
+
+  const skullFolder = gui.addFolder('Crâneo')
+  skullFolder.add(craneo.rotation, 'x', 0, Math.PI * 2);
+  skullFolder.add(craneo.rotation, 'y', 0, Math.PI * 2);
+  skullFolder.add(craneo.rotation, 'z', 0, Math.PI * 2);
+  skullFolder.add(craneo.position, 'x', -50, Math.PI * 2);
+  skullFolder.add(craneo.position, 'y', 0, Math.PI * 2);
+  skullFolder.add(craneo.position, 'z', 0, Math.PI * 2);
+}
+
+
+
 let skull;
+let craneo;
 const loader = new GLTFLoader();
 loader.load(
   "https://liaser.s3.sa-east-1.amazonaws.com/praticas/cenario-saude/modelos-3d/visible_interactive_human_-_exploding_skull.glb",
   function (gltf) {
     const model = gltf.scene;
+    craneo = model;
     model.visible = true;
     model.position.x = -50;
     scene.add(model);
+    
+    createPanelSkull();
+    
     skull = new THREE.AnimationMixer(model);
-
     const clips = gltf.animations;
     clips.forEach(function (clip) {
       const action = skull.clipAction(clip);
@@ -122,7 +142,12 @@ const createCubeWithTexture = () => {
     scene.add(object);
   }
 };
-createCubeWithTexture();
+// createCubeWithTexture();
+
+// setTimeout(()=>{
+//   console.log(craneo)
+//   createPanel()
+// }, 10 * 1000)
 
 camera.position.z = 30;
 
@@ -132,6 +157,19 @@ scene.background = new THREE.CubeTextureLoader()
 
 // Adicionando controles de órbita para interatividade
 const controls = new OrbitControls(camera, renderer.domElement);
+
+// Controles por seta
+
+let keydown;
+
+window.onkeydown = function(e) {
+  if(e.key === "ArrowUp") camera.position.z -= 1;
+  if(e.key === "ArrowDown") camera.position.z += 1;
+  if(e.key === "ArrowLeft") camera.position.x -= 1;
+  if(e.key === "ArrowRight") camera.position.x += 1;
+}
+
+
 
 const clock = new THREE.Clock();
 function animate() {
